@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <style>
 @font-face {
     font-family: UniSans;
@@ -10,7 +11,7 @@
 @font-face {
     font-family: UniSansSemiBold;
     src: url(Uni_Sans_SemiBold.ttf);
-    font-weight: semibold;
+    font-style: semibold;
 }
 
 h1 {
@@ -22,21 +23,19 @@ h1 {
 
 h2 {
 	font-family: UniSans;
-	margin-left: 10%;
-	margin-right: 10%;
-	padding-top: 10px;
 }
 
 h3 {
 	font-family: UniSans;
-	margin-left: 12%;
-	margin-right: 12%;
+	margin-left: 20px;
 }
 
 p {
-	font-size: 18px;
-	margin-left: 15%;
-	margin-right: 15%;
+	font: 200 16px/1.5 "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-style: normal;
+	font-size: 16px;
+	font-weight: 200px;
+	margin-left: 40px;
 }
 
 figure {
@@ -51,19 +50,22 @@ figure {
 </head>
 <body>
 
-<p>
 <figure>
 <img src="BWLogo.png" alt="BW Logo" style="width:297px;height:54px;padding-top:20px">
 <img src="csail_logo.jpg" alt="CSAIL Logo" style="width:100px;height:100px;padding-top:20px;padding-left:20px">
 <img src="aeroastro_logo_sq.jpg" alt="AeroAstro Logo" style="width:100px;height:100px;padding-top:20px;padding-left:20px">
 <img src="mit_eecs_logo.jpg" alt="MIT EECS Logo" style="width:103px;height:77px;padding-top:20px;padding-left:20px">
 </figure>
-</p>
 
+<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
+
+<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
 <h3 style="text-align:center;padding-top:20px">MIT Beaver Works Summer Institute</h3>
 <h1>Programming Autonomous RC Cars with Exteroceptive and Proprioceptive Sensors</h1>
 <h3 style="text-align:center">Jacob Nazarenko</h3>
-<h2>Project Overview</h2>
+<hr style="-webkit-margin-start:auto;-webkit-margin-end:auto"></hr>
+
+<h2 style="padding-top:10px">Project Overview</h2>
 <h3>The Class</h3>
 <p>&nbsp&nbsp&nbsp&nbsp&nbspThe Beaver Works Summer Institute program was created in late 2015 by several Lincoln Laboratory staff members, in conjunction with MIT students and faculty. The task for the program's first implementation (in the summer of 2016) was the programming of autonomous remote-control rally cars running ROS (Robot Operating System). This task was based on the objectives of two MIT courses, both taught by Professor Sertac Karaman: "Robotics Science and Systems" (6.141), as well as a short IAP course dedicated to programming the cars. The ultimate goal of the summer program was to get students explore ROS, and to take advantage of the cars' onboard sensors and supercomputer to develop their own machine vision and autonomous driving algorithms. The program lasted four weeks, each of which included a different topic of interest, from moving the car autonomously, along a wall, to detecting colored markers and allowing the car to perform localization. Each day included several lectures from both program staff and outside lecturers, all of which were partially or directly related to the program content. In between lectures, the students would complete labs in which they would develop algorithms allowing the cars to execute given sets of instructions autonomously. The theme of the first week was getting a car to move by manually sending it commands, before implementing an autonomous motor controller (such as PID). The second week's topic was the detection of colored markers with the car's onboard stereo camera. The third week included the combination of marker detection and drive code, as well as the development of an obstacle avoidance algorithm. And lastly, the fourth week involved the combination of all the algorithms developed in preparation for the final grand prix race.</p>
 <h3>The Hardware</h3>
@@ -85,6 +87,9 @@ figure {
 <p></p>
 <h2>Works Cited</h2>
 <p></p>
+</div>
+
+</div>
 
 </body>
 </html>
