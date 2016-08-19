@@ -40,9 +40,17 @@ p {
 
 figure {
     text-align: center;
-	margin-left: 20%;
-	margin-right: 20%;
 }
+
+.caption {
+	font-family: Roboto;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.3;
+	padding-left: 100px;
+	padding-right: 100px;
+}
+
 </style>
 
 <title>Technical Report</title>
@@ -51,13 +59,13 @@ figure {
 <body style="padding-top:10px;padding-bottom:40px">
 
 <figure>
-<img src="BWLogo.png" alt="BW Logo" style="width:297px;height:54px">
-<img src="csail_logo.jpg" alt="CSAIL Logo" style="width:100px;height:100px;padding-left:20px">
-<img src="aeroastro_logo_sq.jpg" alt="AeroAstro Logo" style="width:100px;height:100px;padding-left:20px">
-<img src="mit_eecs_logo.jpg" alt="MIT EECS Logo" style="width:103px;height:77px;padding-left:20px">
+<a href="https://beaverworks.ll.mit.edu/CMS/bw/"><img src="resources/BWLogo.png" style="width:297px;height:54px"/></a>
+<a href="https://www.csail.mit.edu/"><img src="resources/csail_logo.jpg" style="width:100px;height:100px;padding-left:20px"/></a>
+<a href="http://aeroastro.mit.edu/"><img src="resources/aeroastro_logo_sq.jpg" style="width:100px;height:100px;padding-left:20px"/></a>
+<a href="https://www.eecs.mit.edu/"><img src="resources/mit_eecs_logo.jpg" style="width:103px;height:77px;padding-left:20px"/></a>
 </figure>
 
-<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
+<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px;padding-bottom:50px">
 <h3 style="text-align:center;padding-top:20px">MIT Beaver Works Summer Institute</h3>
 <h1>Programming Autonomous RC Cars with Exteroceptive and Proprioceptive Sensors</h1>
 <h3 style="text-align:center">Jacob Nazarenko</h3>
@@ -67,11 +75,51 @@ figure {
 
 <h2 style="padding-top:10px">Project Overview</h2>
 <h3>The Class</h3>
-<p>&nbsp&nbsp&nbsp&nbsp&nbspThe Beaver Works Summer Institute program was created in late 2015 by several Lincoln Laboratory staff members, in conjunction with MIT students and faculty. The task for the program's first implementation (in the summer of 2016) was the programming of autonomous remote-control rally cars running ROS (Robot Operating System). This task was based on the objectives of two MIT courses, both taught by Professor Sertac Karaman: "Robotics Science and Systems" (6.141), as well as a short IAP course dedicated to programming the cars. The ultimate goal of the summer program was to get students explore ROS, and to take advantage of the cars' onboard sensors and supercomputer to develop their own machine vision and autonomous driving algorithms. The program lasted four weeks, each of which included a different topic of interest, from moving the car autonomously, along a wall, to detecting colored markers and allowing the car to perform localization. Each day included several lectures from both program staff and outside lecturers, all of which were partially or directly related to the program content. In between lectures, the students would complete labs in which they would develop algorithms allowing the cars to execute given sets of instructions autonomously. The theme of the first week was getting a car to move by manually sending it commands, before implementing an autonomous motor controller (such as PID). The second week's topic was the detection of colored markers with the car's onboard stereo camera. The third week included the combination of marker detection and drive code, as well as the development of an obstacle avoidance algorithm. And lastly, the fourth week involved the combination of all the algorithms developed in preparation for the final grand prix race.</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe Beaver Works Summer Institute program was created in late 2015 by several Lincoln Laboratory staff members, in conjunction with MIT students and faculty. The task for the program's first implementation (in the summer of 2016) was the programming of autonomous remote-control rally cars running ROS (Robot Operating System). This task was based on the objectives of two MIT courses, both taught by Professor Sertac Karaman: "Robotics Science and Systems" (6.141), as well as a short IAP course dedicated to programming the cars. The ultimate goal of the summer program was to get students explore ROS, and to take advantage of the cars' onboard sensors and supercomputer to develop their own machine vision and autonomous driving algorithms. The program lasted four weeks, each of which included a different topic of interest, from moving the car autonomously, along a wall, to detecting colored markers and allowing the car to perform localization. Each day included several lectures from both program staff and outside lecturers, all of which were partially or directly related to the program content. In between lectures, the students would complete labs in which they would develop algorithms allowing the cars to execute given sets of instructions autonomously. The theme of the first week was getting a car to move by manually sending it commands, before implementing an autonomous motor controller (such as PID). The second week's topic was the detection of colored markers with the car's onboard stereo camera. The third week included the combination of marker detection and drive code, as well as the development of an obstacle avoidance algorithm. And lastly, the fourth week involved the combination of all the algorithms developed in preparation for the final grand prix race. 
+</p>
 <h3>The Hardware</h3>
-<p></p>
+<figure>
+<img src="resources/racecar_hardware.png" style="align:center;width:500px;height:375px"/></figure>
+<p class=caption>Figure 1. RACECAR Hardware (1). The above diagram highlights several key components of each RACECAR (Rapid Autonomous Complex-Environment Competing Ackermann-steering Robot) system.
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe chasses of the cars we used during the BWSI program were originally from Traxxas model 74076 cars, which are 1/10 scale remote control rally cars with four-wheel drive and front-wheel Ackermann steering. The brushless motors and some other electrical components mounted on the chassis were moved around to make space for holding an extra battery, USB hub, wiring, and sensors that were added on. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEach car had a series of onboard sensors for various purposes. First, each car was equipped with a Hokuyo UST-10LX LIDAR for detecting a two-dimensional laser scan of obstacles within a 270-degree range in front of the car. Each Hokuyo LIDAR scanner would return 1080 ranges indicating how far a laser signal could travel in a given direction from the car, one for each quarter of a degree. The laser would turn clockwise at a constant rate of about 40 Hz, and would report its arrays of ranges over an Ethernet connection at about the same rate. It could very accurately detect ranges as close as about 0.06 m and as far as about 10 m. 
+</p>
+<figure>
+<img src="resources/lidar.png"/>
+<img src="resources/lidar_path.png" style="padding-left:20px"/>
+</figure>
+<p class=caption>Figure 2. The Hokuyo UST-10LX Scanning Laser Rangefinder. This figure contains an image of the Hokuyo LIDAR we used on our cars, as well as its counterclockwise path.
+</p>
+<p>Each car also had a Sensorlabs Zed stereo camera mounted in front. As a passive stereo camera, the Zed consisted of two color cameras side by side, and could use the data from these cameras for depth perception from about 0.7 m to 20 m. Although we never utilized the depth perception functionality of these cameras, we often used one camera stream or the other to detect colored markers ahead of the car. 
+</p>
+<figure>
+<img src="resources/zed_camera.png"/>
+</figure>
+<p class=caption>Figure 3. The Zed Stereo Camera. This is an image of the Stereolabs Zed passive stereo camera we used for marker detection on our cars. 
+</p>
+<p>Next, each car had a Sparkfun model 10736 Inertial Measurement Unit (IMU) with 9 degrees of freedom. Each IMU contained three sensors: a three-axis accelerometer for measuring translational acceleration, a three-axis gyroscope for measuring angular velocity, and a three-axis magnetometer for measuring translational field strength. Although we always had the option of using data from the IMU, it was often unreliable due to either poor calibration or magnetic interference. 
+</p>
+<figure>
+<img src="resources/imu.png"/>
+</figure>
+<p class=caption>Figure 4. The Sparkfun IMU. Above is an image of the Sparkfun model 10736 IMU that was mounted on each of our cars.
+</p>
+<p>Finally, each car had a mounted NVIDIA Jetson TX1 supercomputer with a 256-core NVIDIA Maxwell GPU and 4 GB of memory for running ROS on the Linux operating system and performing all of the calculations on incoming sensor data. 
+</p>
+<figure>
+<img src="resources/jetson_tx1.png" style="width:500px;height:343px"/>
+</figure>
+<p class=caption>Figure 5. The NVIDIA Jetson TX1 Supercomputer. The image above is of the NVIDIA Jetson Tegra X1 Supercomputer we used for running all of our code on our racecar. 
+</p>
+<p>Additionally, to control the driving and steering on the car, each car had a VESC motor controller connected to the onboard TX1 computer, which would send out driving commands to the motor controller via ROS. (2)
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThere were multiple ways to connect to a car's onboard computer. The primary way was to use the SSH protocol to connect the car's computer from a machine natively or virtually running Linux on the same network (either wirelessly or through Ethernet), and execute commands remotely. An alternative method involved connected the car's Jetson to an external monitor via HDMI, and connected a keyboard and mouse to the car's USB hub (connected to the car's computer) for typing and running commands. A major downside to the latter method, however, was that the HDMI cable made it virtually impossible to run any driving commands on the car, making it necessary to keep the car stationary while connected to a monitor. 
+</p>
 <h3>The Software</h3>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspA key component of our racecars was the operating system through which we connected its sensor data to its driving controllers in order to make it drive autonomously: the Robot Operating System (ROS). For programming our cars, we used the 'Indigo' version of ROS. We used ROS primarily because it is a powerful, flexible, yet complex open-source system used widely in both research and industry. A major benefit to using ROS is that it is language independent, has support for multiple languages (such as C++ and Python), and consists primarily of contributed algorithms, drivers, and applications which may be reused for different robotics applications. In a typical ROS application, there are usually hundreds of nodes running at the same time, which make up a network known as the "ROS Computational Graph." Within this network, programs known as "nodes" communicate with each other by sending data as "messages" over channels known as "topics." A sensor on a robot, for example, may publish messages with output data to a topic, which a node (usually a script written in any programming language supported by ROS) may "subscribe" to and then use to determine what the robot must do next. Each node may subscribe or publish to one or more topics. (3)
+</p>
 <h2>Challenges, Methods, and Findings</h2>
 <h3>Week 1: Manual Control and Wall Following</h3>
 <p></p>
@@ -91,10 +139,8 @@ figure {
 
 </div>
 
-</body>
-<hr>
-<footer>
 <div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
-<p style="font-size:24px;font-weight=300">BWSI Technical Report</p>
-</div>
+<hr>
+
+</body>
 </html>
