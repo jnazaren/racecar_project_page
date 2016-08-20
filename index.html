@@ -44,19 +44,59 @@ figure {
 
 .caption {
 	font-family: Roboto;
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 14px;
 	line-height: 1.3;
 	padding-left: 100px;
-	padding-right: 100px;
+	padding-right: 130px;
+}
+
+a { 
+	color: #2a7ae2; 
+	text-decoration: none; 
+}
+
+a:visited { 
+	color: #1756a9; 
+}
+
+a:hover { 
+	color: #111; 
+	text-decoration: underline; 
+}
+
+span{
+	font-family: Roboto;
+	font-size: 16px;
+	padding-bottom: 3px;
+}
+
+.label{
+	font-family: Roboto;
+	font-size: 14px;
+	text-align: right;
+}
+
+ol{
+	font-family: Roboto;
+	font-size: 16px;
+	line-height: 1.5;
+	font-weight: 400;
+	margin-left: 40px;
 }
 
 </style>
 
 <title>Technical Report</title>
-
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  MathJax.Hub.setRenderer("SVG")
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
 </head>
-<body style="padding-top:10px;padding-bottom:40px">
+<body style="padding-top:10px;padding-bottom:20px">
 
 <figure>
 <a href="https://beaverworks.ll.mit.edu/CMS/bw/"><img src="resources/BWLogo.png" style="width:297px;height:54px"/></a>
@@ -65,13 +105,13 @@ figure {
 <a href="https://www.eecs.mit.edu/"><img src="resources/mit_eecs_logo.jpg" style="width:103px;height:77px;padding-left:20px"/></a>
 </figure>
 
-<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px;padding-bottom:50px">
+<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
 <h3 style="text-align:center;padding-top:20px">MIT Beaver Works Summer Institute</h3>
 <h1>Programming Autonomous RC Cars with Exteroceptive and Proprioceptive Sensors</h1>
 <h3 style="text-align:center">Jacob Nazarenko</h3>
 <hr>
 
-<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
+<div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px;padding-bottom:20px">
 
 <h2 style="padding-top:10px">Project Overview</h2>
 <h3>The Class</h3>
@@ -120,27 +160,198 @@ figure {
 <h3>The Software</h3>
 <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspA key component of our racecars was the operating system through which we connected its sensor data to its driving controllers in order to make it drive autonomously: the Robot Operating System (ROS). For programming our cars, we used the 'Indigo' version of ROS. We used ROS primarily because it is a powerful, flexible, yet complex open-source system used widely in both research and industry. A major benefit to using ROS is that it is language independent, has support for multiple languages (such as C++ and Python), and consists primarily of contributed algorithms, drivers, and applications which may be reused for different robotics applications. In a typical ROS application, there are usually hundreds of nodes running at the same time, which make up a network known as the "ROS Computational Graph." Within this network, programs known as "nodes" communicate with each other by sending data as "messages" over channels known as "topics." A sensor on a robot, for example, may publish messages with output data to a topic, which a node (usually a script written in any programming language supported by ROS) may "subscribe" to and then use to determine what the robot must do next. Each node may subscribe or publish to one or more topics. (3)
 </p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEach topic holds only one certain type of message. A type of message can be anything from a simple, standard message type such as a string or a float, to a more complex custom message that may carry multiple variables of multiple data types. For some applications such as marker detection, custom message types were very useful for reporting all of the information for a detected marker in a single message. For launching multiple nodes at the same time, we used a type of file known as a 'launch' file, an XML-style file containing the names of all of the nodes we wanted to launch. Another feature we often used for testing was the rosbag functionality in ROS, which allowed us to create recordings of all ros activity (messages sent over all or specified topics) over a given time interval and then play it back as if it was happening in real time. There were several ways in which we could check what was happening between different ROS nodes and what messages were being sent over certain topics. For a general overview, we could check what the whole ROS computation graph itself looked like through the rqt_graph module.
+</p>
+<figure>
+<a href=resources/rqt_graph.png>
+<img src="resources/rqt_graph.png" style="width:600px;height:378px"/></a>
+</figure>
+<p class=caption>Figure 6. The rqt_graph Module. Above is an image of what the ROS computational graph looked like when running a simulation of the racecar (which tended to create the same topics and messages as the actual racecar). 
+</p>
+<p>Another very useful ROS function was rostopic echo, which allowed us to see all of the messages being published to a given topic. 
+</p>
+<figure>
+<img src="resources/rostopic_echo.png" style="width:500px;height:270px"/>
+</figure>
+<p class=caption>Figure 7. The rostopic echo Function. When we used the rostopic echo function on our contour detection channel, we could see when a contour was being detected, as well as the detected contour's color, size, and location. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe programming language we used to write all of our nodes was Python 2.7, which, like all other programming languages supported by ROS, would work perfectly well even with nodes written in other languages. We used Python primarily because it is an intuitive, easy-to-learn language with a flexible syntax, and is nevertheless very powerful due to its many available libraries. To use Python with ROS, we had to import the rospy library, which allowed our applications to integrate with the ROS environment. Many ROS nodes run exclusively on callback functions, which means that most ROS programs are triggered by certain events, such as timers (4). When a program is finished executing, it enters ROS's main event loop, known as 'spin.' In this way, most ROS nodes operate in loops until they either are unregistered in the code or no longer receive suitable data. A ROS master node, necessary for any other nodes to run, is responsible for logging data and maintaining connections between publishing and subscribing nodes.
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe operating system we used throughout the program was Ubuntu Linux 14.04. Many chose to run this operating system virtually on their personal computers, but all of the cars had an ARM version of Ubuntu running natively on their TX1 computers. We used Ubuntu Linux mainly because it is easily customizable, has a powerful command line interface, and has support for embedded systems and supercomputers (5). Most chose to use either Terminator or TMux for executing shell commands, and some used text editors such as Vim or Emacs for editing code, while others used larger IDE's such as Pycharm. Shell commands used often were the 'ssh' command, for connecting to and running commands remotely on the cars; the 'source' command, for setting up all of the necessary environment variables for a given ROS package; the 'rosrun' command, for running ROS nodes separately; the 'roslaunch' command, for running multiple nodes at a time; and the 'rostopic' command, for listing and inspecting the data being published to a given topic. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspTwo major Python libraries we used for programming vision and driving code for our cars were OpenCV and Numpy. OpenCV is a large, open-source computer vision library with many functionalities and a wide range of applications. The OpenCV functionality we used most was the color filtering function, which we used to detect markers of different colors. Numpy is a popular library for manipulating large sets of numerical data easily. This library was very useful for our potential field driving algorithm (to be explained later), which required some multivariable calculus-based data analysis. All of the code my group wrote went into private code repositories stored on Github, a large online code repository storage with powerful version tracking functionality. This way, all of our code stayed safe, organized, and updated. 
+</p>
 <h2>Challenges, Methods, and Findings</h2>
 <h3>Week 1: Manual Control and Wall Following</h3>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDuring the first week, students explored a method of manually publishing drive messages to the car's drive command topic, and eventually created their own Python (rospy) nodes to publish these messages automatically. When a car's teleoperation file is launch with the roslaunch command, the car's drive system is automatically started and configured. Within a car's driving system are numerous nodes, each of which serves an important purpose. One of the most important nodes is called 'ackermann_cmd_mux,' and acts like a multiplexer with respect to the different driving command input methods. There are three main input methods: navigation, teleop, and safety. Although the joystick input uses the teleop method regularly, any of these three methods may be used to publish drive commands manually, and the ackermann_cmd_mux node will select the input method that publishes at the highest rate to send to the motor controller. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspIn order to send drive commands manually to the car, we published drive messages to the navigation input method at a minimum rate of 10-15 Hz. In order to make the publication of drive messages automatically dependent on data from the car's Hokuyo LIDAR, however, we needed to make a node that was a subscriber as well as publisher - one which subscribed to the LIDAR's output scan topic, processed the data every time it received a message from the laser, and published the corresponding drive angle along with a set speed to the navigation topic. The 'wall' along which the car needed to drive looked similar to the one in the following testing setup (Figure 8). 
+</p>
+<figure>
+<img src="resources/wall_setup.png" style="width:500px;height:259px"/>
+</figure>
+<p class=caption>Figure 8. Wall Following Setup. The above photo shows a testing setup for wall following very similar to the one used during the actual challenge and during the final grand prix race. The car needed to rely primarily on LIDAR data to determine the correct driving angle.
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMy group tried three different algorithms for determining the car's new steering angle every time the node received laser data and calculated the amount of error. Error in our case was calculated with the following equation: $$E=D_{Desired}-D_{Actual}$$Although $D_{Desired}$ is a constant, $D_{Actual}$, the car's distance from the wall at a given time, can be calculated through numerous different methods, each of which have their pros and cons. My group used the following two equations to determine this variable:$$D_{Actual}=min\left(array\_of\_pts\left[Index_1:Index_2\right]\right)$$
+$$D_{Actual}=\frac{R_1R_2}{2\sqrt{\left.(R_1\right){}^2+\left.(R_2\right){}^2-\sqrt{3}R_1R_2}}$$In the equations above, $Index_1$ and $Index_2$ specify the bounds of a set of ranges in the $array\_of\_pts$ array the laser returned. $R_1$ and $R_2$ are two specific ranges in the array at a certain given angle apart (usually thirty degrees). Different predetermined indices and ranges were used above depending on the side from which the car followed the wall, and although only one of the above algorithms was required, my group took the average of the outputs of the two methods. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe first of three drive control algorithms (mentioned above) that my group tried was a simple 'bang-bang' controller, which changes the steering angle between a constant -1 radian and 1 radian based on whether the error is negative or positive. This drive control method was the most unstable and least efficient of the three we tried, as there was no correlation between the error and the change of error over time. A slightly improved method my group implemented next was the same bang-bang controller, but with a threshold on the error value needed in order to change the steering angle to 1 or -1 radian. If the error was not above the threshold, the car would go straight. Below is a video of the car driving with a threshold of 0.07 meters:
+</p>
+<figure>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeQU1Yb1ZVWVJEQlk/preview" width="500" height="281"></iframe>
+</figure>
+<p>The third drive controller we implemented was a PID (Proportion + Integral + Derivative) algorithm. This was a lot more responsive and reliable than the bang-bang controllers, as it took into account the error itself, the derivative or its change over time, and the integral of its change over time. We found a new error value, which we used also used as the car's new steering angle, using the following PID formula:$$E_{New}=K_pE+K_i\int _0^tEdt+K_d\frac{dE}{dt}=Steeringangle$$In the equation above, $E$ is the original error obtained using the two previous euqations, and $K_p$, $K_i$, and $K_d$ are the proportional, integral, and derivative constants respectively. Below are several videos of our car driving with the use of a PID controller: 
+</p>
+<figure>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeecG1TNUNQN2RjVWc/preview" width="400" height="225"></iframe>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeRXJyWFhvOWZxMm8/preview" width="400" height="225"></iframe>
+</figure>
+<p>These videos reveal a common challenge in using a PID controller: coming up with the right constants to use. Although the controller itself worked very efficiently and reliably, the video on the left demonstrates how poorly car turned, and the video on the right demonstrates how often the car oscillated when we used unideal constants. The following animation shows how tweaking PID values changes the error over time (6):
+</p>
+<figure>
+<img src="resources/PID_Compensation_Animated.gif"/>
+</figure>
+<p>Overall, we determined that for simply following a wall, a PID controller may be the most effective drive controller, granted that the constants used are correct. 
+</p>
 <h3>Week 2: Making the Correct Turn</h3>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDuring the second week, the program staff introduced the students to OpenCV, a large, open-source computer vision library, which the students would eventually use to filter out colored markers in a video stream. The final challenge for the week was for a racecar to autonomously drive in the direction of either a red or green colored marker, determine marker's color, make either a left or right turn based on the color of the marker, and follow the wall behind the marker for a certain distance. A diagram of the challenge layout is below (7): 
+</p>
+<figure>
+<img src="resources/week2challenge.png"/>
+</figure>
+<p class=caption>Figure 9. Week 2 Challenge: Making the Correct Turn. The image above portrays the setup of the second week's final challenge. 
+</p>
+<p>For this challenge, students would use both the LIDAR sensor and the Zed stereo camera on the car. In order to process both camera footage and laser scan data, the series of nodes that my group created for this challenge needed to subscribe to both the scan topic and the camera's 'image_rect_color' topic, which streamed frames from one of the two cameras in the Zed. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe marker detection algorithm most groups used was similar to the following:
+</p>
+<ol>
+<li>Retrieve a single frame from the Zed camera through its ros topic</li>
+<li>Convert it to OpenCV format and the HSV color space</li>
+<li>Create a mask using an OpenCV function that found all of the pixels in the frame that were between two given sets of HSV values</li>
+<li>Apply the mask to the image </li>
+<li>Detect the contours of shapes that remained in the image</li>
+<li>Take the largest contour, and put a bounding rectangle around it</li>
+<li>Determine the coordinates of the bounding rectangle's center, and publish them, along with the RGB values of the pixel that is located at those coordinates. </li>
+</ol>
+<p>Once OpenCV detected contours in an image, information could be published about the largest contour. To stream information about contours (or 'blobs') the camera saw, my group used a separate topic with a custom message type containing information about a blob's size, color, and location in the image. We created one node to detect the contours and publish information about them, and another node to subscribe to the published information and steer the car correspondingly towards the center of a given contour with the use of a PID controller. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspA unique feature of my group's contour-tracking node was the addition of OpenCV 'trackbar' functionality to assist with determining the correct lower and upper HSV value bounds to use for each color's mask. The use of a window with these sliders along with the filtered image itself in real time helped my group significantly. Figure 10 below shows what our set of trackbars looked like, and how the trackbars influenced our workflow. 
+</p>
+<figure>
+<img src="resources/originalframe.png" style="width:300px;height:170px"/>
+<img src="resources/trackbars.png" style="width:300px;height:339px;padding-left:10px"/>
+<img src="resources/contour_data.png" style="padding-left:10px"/>
+</figure>
+<p class=caption>Figure 10. Trackbar Workflow and Target Information. The image on the left shows an unfiltered frame which comes in from a car's Zed camera. The middle image shows the unique and very convenient approach my group took to picking out the upper and lower HSV values for filtering out unneeded color. Our interface contained six trackbars: three for lower and three for upper bounds, and each representing either and H, S, or V value. The filtered image displayed would only contain pixels within the set bounds. The image on the right shows the contents of the custom message type we used to describe a detected contour. Variables included the RGB color values of the contour's center, as well as the size of the contour and the coordinates of its center on the screen. 
+</p>
+<p>Although our contour-tracking node only served the purpose of publishing contour information and displaying the tuning window when the tuning functionality was manually chosen at startup, our driving node had several functions, which occurred in sequence. Because each subscriber must have a callback method, only one variable was used to subscribe to either camera (contour information) data or laser scan data at any given time. Before a contour of a given size was detected (signaling that the car had almost reached the wall), this variable would represent a subscription to contour information, which would allow a PID controller to steer the car towards the center of a detected contour. The color of this contour, also included in the stream of information, would be used to determine whether the car was to eventually follow the wall ahead from the right or left side. Once the contour reached a certain size, which was checked at every iteration of the contour data callback, the contour information subscriber would be unregistered, and the same variable would then used to instantiate a laser scan data subscriber. The callback for this laser scan data would first push the car at a constant speed and steering angle to either the right or the left for about a second (managed by a counter variable), and would then use the same PID controller with different PID values to keep the car moving along the wall, similarly to the previous week's challenge. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDespite having the trackbars to assist with the determination of proper HSV values to search for given colors, there were nevertheless certain limitations of using OpenCV that made it especially difficult to create a solid vision system. The most prevalent of these challenges was the inability to dynamically adjust to different lighting conditions. As the lighting was slightly different in each room and during different times of day, the constant values we would determine in one test would have to be changed for another, and with our simplistic approach of setting constant values in the code with each test, there was virtually no way around this challenge. The trackbars, as expected, helped ease the readjustment of values before each test. Several videos of our car completing the challenege, taken both from the car and from a birds-eye view, are below.
+</p>
+<figure><p class=caption style="font-size:16px">Turning Right on Green</p>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeea1Z0RHFDcDBhNmM/preview" width="400" height="225"></iframe>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeecTdOY3hKcEx0c3c/preview" width="400" height="225"></iframe>
+<p class=caption style="font-size:16px">Turning Left on Red</p>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeeHRrb1daQk1SYjg/preview" width="400" height="225"></iframe>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeUU0tVGdHclF3NnM/preview" width="400" height="225"></iframe>
+</figure>
+<p>Additionally, because the magnitude of change in error over time in the case of steering towards a contour was very different than that in the case of staying at a certain distance from the wall, significantly different PID values were used for one task as opposed to the other, and therefore a graph of contour-tracking error over time looks different from a graph of wall-following error over time (Figure 11). 
+</p>
+<figure>
+<a href="resources/error_graphs.png"><img src="resources/error_graphs.png" style="width:600px;height:342px"/></a>
+</figure>
+<p class=caption>Figure 11. Contour-Tracking vs. Wall-Tracking Error over Time. The image above shows a graph of error over time for contour tracking (on the left) vs wall-following (on the right). The PID values used for contour-tracking were P=0.005, I=0, D=0, and the values for wall-following were P=1.0, I=0, D=0.8. This data was collected through a Gazebo simulation that very closely replicated the setup of the challenge. 
+</p>
+<p>Based on the results of using PID in the cases of contour-tracking and wall-following, higher PID values lead to more responsiveness, but also to more frequent overshooting and oscillation. For this challenge, we decided to use higher values for wall-following because the car's steering needed to be much more responsive when keeping the car at a certain distance from a wall than when keeping the car aimed directly at a target when driving forward. 
+</p>
 <h3>Week 3: Avoiding Obstacles and Localizing</h3>
-<p></p>
+<p>Our challenge during the third week was to program our car to explore an open area with different obstacles without colliding with the obstacles or boundaries. Attached to each obstacle was a shape of a random color, or a photo pasted onto a pink background. The car had to identify the shapes and photos it saw, along with their colors, and save labeled photos of those shapes into a given directory. A photo of the challenge setup is below. 
+</p>
+<figure>
+<img src="resources/week3_setup.png" style="width:500px;height:281px"/>
+</figure>
+<p class=caption>Figure 12. Week 3 Challenge Setup. This photo shows the bounded area in which the third week's challenge took place. Each car was to identify the shapes, photos, and colors it saw, and to save photos of what it saw to a given directory. 
+</p>
+<p>A simple wall following algorithm such as the one used during the first two weeks would not necessarily work for this challenge, as the simple wall following algorithm we had been using used only a limited range of LIDAR data, and therefore only tracked a small portion of one of the walls. The algorithm needed for the task of avoiding all obstacles would need to take all of the obstacles in the LIDAR data into account, and it was for this reason that a 'potential field' algorithm was used. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspWith the potential field algorithm, all obstacles around a car would form a potential field such that the car would be attracted to free space and repelled from surrounded obstacles (8). From a physics point of view, both the car and the obstacles around it may be considered positively-charged particles, while any free space around the car may be considered negatively-charged particles.
+</p>
+<figure>
+<img src="resources/pf1.png"/>
+<img src="resources/pf2.png"/>
+</figure>
+<p class=caption>Figure 13. Potential Field Analysis and Results (9).  The above images show the distribution of the potential field for a given set of obstacles (on the left), as well as the estimated trajectories for a robot moving among those obstacles (on the right). 
+</p>
+<p>In my group's implementation of the potential field algorithm, the gradient of each range returned from the LIDAR would be calculated. The potential $(U)$ of each obstacle (or the force that each obstacle would have on the car) was inversely proportional to the distance between the car and the obstacle:
+$$U_{obstacle}=\frac{1}{||\text{pos}_{car}-pos_{obstacle}||}=\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}$$To figure out the direction pointing down the potential surface, and the total influence of nearby obstacles on the steering angle and speed of the car, we found each the gradient at each surrounding LIDAR data point with respect to the car's coordinates, $x_{car}$ and $y_{car}$:$$\frac{\partial U_{obstacle}}{\partial x_{car}}=\frac{\partial }{\partial x_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(x_{car}-x_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$<p class=caption style="font-size:16px;text-align:center">AND</p>$$\frac{\partial U_{obstacle}}{\partial y_{car}}=\frac{\partial }{\partial y_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(y_{car}-y_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$
+</p>
+<p>Next, to determine the total potential $(U_{total})$, we found the sum of all gradients with respect to $x_{car}$ and $y_{car}$ separately:$$\frac{\partial U_{total}}{\partial x_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial x_{car}}$$<p class=caption style="font-size:16px;text-align:center">AND</p>$$\frac{\partial U_{total}}{\partial y_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial y_{car}}$$
+</p>
+<p>To determine the steering angle, we used only the x-component of the total gradient:$$SteeringAngle=k_{steer}*\frac{\partial U_{total}}{\partial x_{car}}$$In the equation above, $k_{steer}$ is a constant used to set the amount of influence the potential field had on the car's steering angle. In a similar way, we used the magnitude of the total potential to determine the speed of the car, which could be negative based on the magnitude of the potential's y-component, causing the car to go in reverse when it encountered a set of obstacles it could not overcome:$$Speed=k_{speed}*||{\left\langle \frac{\partial U_{total}}{\partial x_{car}},\frac{\partial U_{total}}{\partial y_{car}}\right\rangle}||
+sign\left(\frac{\partial U_{total}}{\partial y_{car}}\right)$$In eq. 9 above, kspeed determined the amount of influence that the potential field had on the car's speed. Because eq. 9 above often caused the car to get stuck attempting to move forward and reversing due to speed limitations in several places, we eventually changed the way speed was calculated. Instead of applying speed directly in proportion to the magnitude of the total potential, we used an equation that simulated the gradual decay of the car's velocity due to friction, and lightly influenced the car's actual speed with the potential-based speed value:$$Speed_{current}=\mu *Speed_{current}+\alpha *Speed_{potential}$$In the above equation, $\mu$ represents a constant close to but less than 1 which simulates the decay of speed over time (we used 0.95 for this value), and $\alpha$ represents a constant close to but greater than 0 which determines how much the potential-based speed value will influence the buildup of speed overall (we used 0.06 for this value). With this approach, the car handled obstacles much smoother, and therefore functioned in a more predictable manner. To help the car retreat from obstacles, the steering was inverted with a negative constant whenever the overall speed dropped below 0. The adjustment of the constants mentioned here really helped fine-tune the algorithm. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe animation below portrays the results of using the potential field algorithm (10):
+</p>
+<figure>
+<img src="resources/pf_visualization_new.gif"/>
+</figure>
+<p>The video on the left is of the LIDAR data received on the car, while the video on the right is a 3D rendering of the potential field created by the LIDAR data. The green arrow is pointing in the direction of the car's calculated steering angle. 
+</p>
 <h3>Week 4: Race Prep</h3>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe goal of the fourth week of the program was for all of the teams to clean up and prepare their code from the previous three weeks for the final grand prix race. To organize code, my group created one final code repository on Github to store the launch files and scripts used for each of the challenges. Not only did this put everything in one place for ease of access, but it also made all of the scripts a lot easier to launch. The final event involved not only completing a grand prix race around a track, but it also involved the identification of a colored marker for making the correct turn at a fork, and a separate challenge of identifying colored obstacles and photos while driving around on a separate course. 
+</p>
+<figure>
+<img src="resources/racecourse.png" style="width:500px;height:324px"/>
+</figure>
+<p class=caption>Figure 14. Map of the Grand Prix Race Course. The above image is an illustration of the course used for the grand prix race event, located in Walker Memorial on MIT's campus. 
+</p>
+<p>The course consisted of a loop around the floor of Walker Memorial, and included multiple turns, a possible shortcut to one of the sections, and colored markers along the walls for optional localization. Whether or not the shortcut was closed off was indicated by either a red (closed) or a green colored marker above the shortcut entrance. To decide whether or not the shortcut was open, a car would have to identify the color of the marker when it came to the fork (Figure 15), and turn accordingly.</p>
+<figure>
+<img src="resources/fork.png" style="width:500px;height:255px"/>
+</figure>
+<p class=caption>Figure 15. Shortcut Opening When Closed. The above image shows the fork, with the shortcut ahead. At this time, however, the shortcut was closed off, and therefore had a red marker over the entrance to indicate the closure. If a car failed to turn right at the red marker, it would inevitably collide with the barrier on the other end of the shortcut. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMany of the groups, including ours, reused most of their potential field and/or wall-following code for driving, and their visual servoing code for marker detection. What my group did to combine the functionalities of our previous scripts was write a master node script which acted as a multiplexer for drive commands. This master node would take in all of the drive commands published by contour-detection, wall-following, and potential field nodes and decide which drive messages to publish based on the situation. Although this approach did show promise, there were several needed changes that became apparent after the initial tests we conducted on the course. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspFirst and foremost, due to the very dim and inconsistent lighting on the course during different times of day and different weather conditions, our sensitive vision algorithm was either working, partially working, or not working at all. Contour sizes would often different from time to time, and this would cause the master node, which depended primarily on contour size, to switch between one drive message source and another either too late or too soon. To overcome false triggers, we tuned the HSV filtering bounds constantly, and began to use the rolling binary average of a detected contour in order to further filter out noise. Additionally, we needed to tweak some of the potential field algorithm values, such as $k_{steer}$ and $k_{speed}$, in order for the car to perform well on the rest of the track. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDespite several disappointing tests in the beginning, we were eventually able to establish a fairly solid combination of contour detection and potential fields to drive the car, along with what seemed to be working constants. With our algorithm, we placed second in time trials at the grand prix event. Below is a video of our three time trials, the first one being our fastest due to the shortcut:
+</p>
+<figure>
+<iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeanB5TG9TQjR2ZHM/preview" width="500" height="281"></iframe>
+</figure><br>
 <h2>Technical Conclusions</h2>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspIn conclusion, our efforts during the program were a huge success, but with this success came many challenges, failures, and discoveries along the way. In the first week, we saw both the pros and the cons of different types of wall-following algorithms. Although PID came out above the rest, having improper PID values often led to overshooting on turns, frequent oscillations, and other unwanted behavior. The visual servoing challenge we received the second week demonstrated how sensitive and fragile the simple vision systems we developed were. A huge challenge was to have vision working in the room where it would be put to the test, even though the room apparently had very different lighting during different times of day and during different types of weather than other rooms. One of the biggest challenges during the third week was to have both a smart, adaptable driving controller such as the potential field algorithm, as well as an emergency stopping node, running at the same time with minimal interference between the two. Lastly, working as a team on all of these challenges proved to be yet another tough trial, fortunately one in which everyone managed to succeed. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspIn the future, it would be interesting to see what the cars can do better when more sensors are implemented - sensors such as the active Structure.io depth sensor rather than the unreliable passive depth sensing on the Zed camera. Another interesting future project would be to use libraries other than OpenCV for developing vision algorithms. This could possibly include libraries with more machine learning and data analysis integration, and would eliminate the limitations we encountered when using OpenCV for our application. 
+</p>
 <h2>Personal Reflections and Concluding Remarks</h2>
-<p></p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspAs a team member, I myself learned several very useful lessons. First, I learned about the difficulty of integrating multiple people's code when working on a large, challenging real-world problem. There were at least several times during the program when our lack of understanding of each other's code, or the lack of cooperation or communication, brought us down significantly in our challenge. Another major difficulty I encountered was the possibly catastrophic outcome of modifying code at the last minute when there is no 'code freeze' and when I'm tempted to take that risk. I experienced such a catastrophic outcome myself when a repository reset caused the loss of all of my local code modifications during one of the tech challenges. The lesson I learned really emphasized the necessity of having a code freeze or deadline for all of my coding projects. 
+</p>
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspLooking back once again at the major technical lesson I learned both from working on the racecars and listening to the program's many guest lecturers, I can see that the vast field of autonomous cars, along with the rapidly expanding field of general autonomous robotics, still has challenges that will take much time and thought to solve. There are limitations in every sensor's abilities, and robots simply cannot think as humans can - at least not yet. To program a robot to complete a simply simple task for a human may take a surprisingly complex algorithm, and as time goes on, the algorithms required will only become more and more complex. This is why I hope to go into artificial intelligence and autonomous robotics - namely, to try to solve what has yet to be solved in order for robots, regardless of the situation or the environment, to think and act more like humans: autonomously. 
 <h2>Works Cited</h2>
-<p></p>
+<ol>
+<li>Trollback A. RACECAR Hardware [Internet]. 2016 [cited 18 August 2016]. Available from: <a href="https://augustt198.github.io/bwsi-report/assets/img/racecar_hardware.png">https://augustt198.github.io/bwsi-report/assets/img/racecar_hardware.png</a></li>
+<li>Guldner O. Introduction to the RACECAR Platform. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Boulet M. Introduction to ROS. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Boulet M. ROS Development. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Boulet M. Introduction to Linux. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Physicsch. PID Compensation Animated [Internet]. 2015 [cited 17 August 2016]. Available from: <a href="https://upload.wikimedia.org/wikipedia/commons/3/33/PID_Compensation_Animated.gif">https://upload.wikimedia.org/wikipedia/commons/3/33/PID_Compensation_Animated.gif</a></li>
+<li>Anders A, Karaman S, Guerra W. Thursday Laboratory Excercise: Make the Correct Turn at a T Junction. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Karaman S. Basics of Autonomy: Planning and Control. Presentation; 2016; Massachusetts Institute of Technology.</li>
+<li>Barraquand J, Langlois B, Latombe J. Numerical potential field techniques for robot path planning. IEEE Transactions on Systems, Man, and Cybernetics. 1992; 22(2):224-241.</li>
+<li>Video content created by August Trollback</li>
+</ol>
 </div>
 
 </div>
 
 <div style="max-width:1000px;margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px">
 <hr>
+<figure>
 
+<a href="https://github.com/jnazaren"><svg viewBox="0 0 16 16" width="24" height="16" style="vertical-align:text-bottom"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg><span>jnazaren</span></a>
+</figure>
 </body>
 </html>
