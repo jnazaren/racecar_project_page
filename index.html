@@ -54,6 +54,8 @@ figure {
 a { 
 	color: #2a7ae2; 
 	text-decoration: none; 
+	overflow-wrap: break-word;
+	word-wrap: break-word;
 }
 
 a:visited { 
@@ -65,7 +67,7 @@ a:hover {
 	text-decoration: underline; 
 }
 
-span{
+.username{
 	font-family: Roboto;
 	font-size: 16px;
 	padding-bottom: 3px;
@@ -88,12 +90,17 @@ ol{
 </style>
 
 <title>Technical Report</title>
+<!-- put the following into the script tag below: MathJax.Hub.setRenderer("SVG"); -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-  MathJax.Hub.setRenderer("SVG")
+  MathJax.Hub.Config({
+	tex2jax: {
+		inlineMath: [['$','$']],
+		displayMath: [['$$','$$']]
+	}
+  });
 </script>
 <script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full">
 </script>
 </head>
 <body style="padding-top:10px;padding-bottom:20px">
@@ -192,15 +199,19 @@ ol{
 </figure>
 <p class=caption>Figure 8. Wall Following Setup. The above photo shows a testing setup for wall following very similar to the one used during the actual challenge and during the final grand prix race. The car needed to rely primarily on LIDAR data to determine the correct driving angle.
 </p>
-<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMy group tried three different algorithms for determining the car's new steering angle every time the node received laser data and calculated the amount of error. Error in our case was calculated with the following equation: $$E=D_{Desired}-D_{Actual}$$Although $D_{Desired}$ is a constant, $D_{Actual}$, the car's distance from the wall at a given time, can be calculated through numerous different methods, each of which have their pros and cons. My group used the following two equations to determine this variable:$$D_{Actual}=min\left(array\_of\_pts\left[Index_1:Index_2\right]\right)$$
-$$D_{Actual}=\frac{R_1R_2}{2\sqrt{\left.(R_1\right){}^2+\left.(R_2\right){}^2-\sqrt{3}R_1R_2}}$$In the equations above, $Index_1$ and $Index_2$ specify the bounds of a set of ranges in the $array\_of\_pts$ array the laser returned. $R_1$ and $R_2$ are two specific ranges in the array at a certain given angle apart (usually thirty degrees). Different predetermined indices and ranges were used above depending on the side from which the car followed the wall, and although only one of the above algorithms was required, my group took the average of the outputs of the two methods. 
+<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMy group tried three different algorithms for determining the car's new steering angle every time the node received laser data and calculated the amount of error. Error in our case was calculated with the following equation:
+$$E=D_{Desired}-D_{Actual}$$
+Although $D_{Desired}$ is a constant, $D_{Actual}$, the car's distance from the wall at a given time, can be calculated through numerous different methods, each of which have their pros and cons. My group used the following two equations to determine this variable:
+$$D_{Actual}=min\left(array\_of\_pts\left[Index_1:Index_2\right]\right)$$
+$$D_{Actual}=\frac{R_1R_2}{2\sqrt{\left.(R_1\right){}^2+\left.(R_2\right){}^2-\sqrt{3}R_1R_2}}$$
+<p>In the equations above, $Index_1$ and $Index_2$ specify the bounds of a set of ranges in the $array\_of\_pts$ array the laser returned. $R_1$ and $R_2$ are two specific ranges in the array at a certain given angle apart (usually thirty degrees). Different predetermined indices and ranges were used above depending on the side from which the car followed the wall, and although only one of the above algorithms was required, my group took the average of the outputs of the two methods. 
 </p>
 <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspThe first of three drive control algorithms (mentioned above) that my group tried was a simple 'bang-bang' controller, which changes the steering angle between a constant -1 radian and 1 radian based on whether the error is negative or positive. This drive control method was the most unstable and least efficient of the three we tried, as there was no correlation between the error and the change of error over time. A slightly improved method my group implemented next was the same bang-bang controller, but with a threshold on the error value needed in order to change the steering angle to 1 or -1 radian. If the error was not above the threshold, the car would go straight. Below is a video of the car driving with a threshold of 0.07 meters:
 </p>
 <figure>
 <iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeeQU1Yb1ZVWVJEQlk/preview" width="500" height="281"></iframe>
 </figure>
-<p>The third drive controller we implemented was a PID (Proportion + Integral + Derivative) algorithm. This was a lot more responsive and reliable than the bang-bang controllers, as it took into account the error itself, the derivative or its change over time, and the integral of its change over time. We found a new error value, which we also used as the car's new steering angle, with the following PID formula:$$E_{New}=K_pE+K_i\int _0^tEdt+K_d\frac{dE}{dt}=SteeringAngle$$In the equation above, $E$ is the original error obtained using the two previous euqations, and $K_p$, $K_i$, and $K_d$ are the proportional, integral, and derivative constants respectively. Below are several videos of our car driving with the use of a PID controller: 
+<p>The third drive controller we implemented was a PID (Proportion + Integral + Derivative) algorithm. This was a lot more responsive and reliable than the bang-bang controllers, as it took into account the error itself, the derivative or its change over time, and the integral of its change over time. We found a new error value, which we also used as the car's new steering angle, with the following PID formula:$$E_{New} = K_pE + K_i\int _0^tEdt + K_d{d \over dt}E = SteeringAngle$$In the equation above, $E$ is the original error obtained using the two previous euqations, and $K_p$, $K_i$, and $K_d$ are the proportional, integral, and derivative constants respectively. Below are several videos of our car driving with the use of a PID controller: 
 </p>
 <figure>
 <iframe src="https://drive.google.com/a/bu.edu/file/d/0B3BmeIJleAeecG1TNUNQN2RjVWc/preview" width="400" height="225"></iframe>
@@ -284,9 +295,15 @@ $$D_{Actual}=\frac{R_1R_2}{2\sqrt{\left.(R_1\right){}^2+\left.(R_2\right){}^2-\s
 <p class=caption>Figure 13. Potential Field Analysis and Results (9).  The above images show the distribution of the potential field for a given set of obstacles (on the left), as well as the estimated trajectories for a robot moving among those obstacles (on the right). 
 </p>
 <p>In my group's implementation of the potential field algorithm, the gradient of each range returned from the LIDAR would be calculated. The potential $(U)$ of each obstacle (or the force that each obstacle would have on the car) was inversely proportional to the distance between the car and the obstacle:
-$$U_{obstacle}=\frac{1}{||\text{pos}_{car}-pos_{obstacle}||}=\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}$$To figure out the direction pointing down the potential surface, and the total influence of nearby obstacles on the steering angle and speed of the car, we found the gradient at each surrounding LIDAR data point with respect to the car's coordinates, $x_{car}$ and $y_{car}$:$$\frac{\partial U_{obstacle}}{\partial x_{car}}=\frac{\partial }{\partial x_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(x_{car}-x_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$<p class=caption style="font-size:16px;text-align:center">AND</p>$$\frac{\partial U_{obstacle}}{\partial y_{car}}=\frac{\partial }{\partial y_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(y_{car}-y_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$
+$$U_{obstacle}=\frac{1}{||\text{pos}_{car}-pos_{obstacle}||}=\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}$$To figure out the direction pointing down the potential surface, and the total influence of nearby obstacles on the steering angle and speed of the car, we found the gradient at each surrounding LIDAR data point with respect to the car's coordinates, $x_{car}$ and $y_{car}$:$$\frac{\partial U_{obstacle}}{\partial x_{car}}=\frac{\partial }{\partial x_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(x_{car}-x_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$
 </p>
-<p>Next, to determine the total potential $(U_{total})$, we found the sum of all gradients with respect to $x_{car}$ and $y_{car}$ separately:$$\frac{\partial U_{total}}{\partial x_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial x_{car}}$$<p class=caption style="font-size:16px;text-align:center">AND</p>$$\frac{\partial U_{total}}{\partial y_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial y_{car}}$$
+<p class=caption style="font-size:16px;text-align:center">AND</p>
+<p>$$\frac{\partial U_{obstacle}}{\partial y_{car}}=\frac{\partial }{\partial y_{car}}\frac{1}{\sqrt{\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2}}=-\frac{\left(y_{car}-y_{obstacle}\right)}{\left(\left(x_{car}-x_{obstacle}\right){}^2+\left(y_{car}-y_{obstacle}\right){}^2\right){}^{\frac{3}{2}}}$$
+</p>
+<p>Next, to determine the total potential $(U_{total})$, we found the sum of all gradients with respect to $x_{car}$ and $y_{car}$ separately:$$\frac{\partial U_{total}}{\partial x_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial x_{car}}$$
+</p>
+<p class=caption style="font-size:16px;text-align:center">AND</p>
+<p>$$\frac{\partial U_{total}}{\partial y_{car}}=\underset{i=0}{\overset{i=n-1}{\sum }}\frac{\partial U_i}{\partial y_{car}}$$
 </p>
 <p>To determine the steering angle, we used only the x-component of the total gradient:$$SteeringAngle=k_{steer}*\frac{\partial U_{total}}{\partial x_{car}}$$In the equation above, $k_{steer}$ is a constant used to set the amount of influence the potential field had on the car's steering angle. In a similar way, we used the magnitude of the total potential to determine the speed of the car, which could be negative based on the magnitude of the potential's y-component, causing the car to go in reverse when it encountered a set of obstacles it could not overcome:$$Speed=k_{speed}*||{\left\langle \frac{\partial U_{total}}{\partial x_{car}},\frac{\partial U_{total}}{\partial y_{car}}\right\rangle}||
 sign\left(\frac{\partial U_{total}}{\partial y_{car}}\right)$$In the equation above, kspeed determined the amount of influence that the potential field had on the car's speed. Because the equation above often caused the car to get stuck attempting to move forward and reversing due to speed limitations in several places, we eventually changed the way speed was calculated. Instead of applying speed directly in proportion to the magnitude of the total potential, we used an equation that simulated the gradual decay of the car's velocity due to friction, and lightly influenced the car's actual speed with the potential-based speed value:$$Speed_{current}=\mu *Speed_{current}+\alpha *Speed_{potential}$$In the above equation, $\mu$ represents a constant close to but less than 1 which simulates the decay of speed over time (we used 0.95 for this value), and $\alpha$ represents a constant close to but greater than 0 which determines how much the potential-based speed value will influence the buildup of speed overall (we used 0.06 for this value). With this approach, the car handled obstacles much smoother, and therefore functioned in a more predictable manner. To help the car retreat from obstacles, the steering was inverted with a negative constant whenever the overall speed dropped below 0. The adjustment of the constants mentioned here really helped fine-tune the algorithm. 
@@ -351,7 +368,7 @@ sign\left(\frac{\partial U_{total}}{\partial y_{car}}\right)$$In the equation ab
 <hr>
 <figure>
 
-<a href="https://github.com/jnazaren"><svg viewBox="0 0 16 16" width="24" height="16" style="vertical-align:text-bottom"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg><span>jnazaren</span></a>
+<a href="https://github.com/jnazaren"><svg viewBox="0 0 16 16" width="24" height="16" style="vertical-align:text-bottom"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"></path></svg><span class=username>jnazaren</span></a>
 </figure>
 </body>
 </html>
