@@ -1,0 +1,10 @@
+@font-face {
+    font-family: UniSans;
+    src: url(Uni_Sans.ttf);
+}
+
+@font-face {
+    font-family: UniSansSemiBold;
+    src: url(Uni_Sans_SemiBold.ttf);
+    font-style: semibold;
+}
